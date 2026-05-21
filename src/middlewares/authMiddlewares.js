@@ -24,4 +24,24 @@ async function authArtist(req, res, next) {
 
 }
 
-module.exports = {authArtist} ;
+async function authUser(req, res, next) {
+    const token = req.cookies.token;
+
+    if(!token) {
+        return res.status(401).json({ messages: "You dont have access:"});
+    }
+    try{
+        const user = jwt.verify(token,process.env.JWT_SECRET);
+    if(!user) {
+        return res.status(403).json({ messages: "Forbidden"});
+    }
+    req.user = user;
+    next()
+    }
+
+    
+    catch (error) {
+        return res.status(400).json({ error: error.message});
+    }
+}
+module.exports = {authArtist, authUser} ;

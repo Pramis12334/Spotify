@@ -1,5 +1,6 @@
 const express = require('express');
 const musicModel = require('../models/musicModel');
+const userModel = require('../models/userModel');
 const storageServices = require('../services/storage.services');
 const jwt = require('jsonwebtoken');
 const albumModel = require('../models/albumModel');
@@ -35,5 +36,24 @@ async function createAlbum(req, res) {
     
 }
 
-module.exports = { createMusic, createAlbum };
+async function getAllMusics(req, res) {
+    const user = req.user;
+    const musics = await musicModel.find().populate('artist', "username email");
 
+    res.status(200).json({ message: 'musics is found.', musics: musics});
+}
+
+async function getAllalbums(req, res) {
+    
+    try{
+        const user = req.user;
+
+    const album = await albumModel.find().populate("musics", "uri title artist")
+    res.status(200).json({ messages: "Album found", album: album});
+
+    } catch (error) {
+        return res.status(500).json({message: "Error occured", error: error.message});
+    }
+}
+
+module.exports = { createMusic, createAlbum, getAllMusics, getAllalbums };
