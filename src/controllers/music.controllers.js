@@ -38,22 +38,37 @@ async function createAlbum(req, res) {
 
 async function getAllMusics(req, res) {
     const user = req.user;
-    const musics = await musicModel.find().populate('artist', "username email");
+    const musics = await musicModel
+    .find()
+    .skip(1)
+    .limit(1)
+    .populate('artist', "username email");
 
     res.status(200).json({ message: 'musics is found.', musics: musics});
 }
 
 async function getAllalbums(req, res) {
-    
     try{
         const user = req.user;
 
-    const album = await albumModel.find().populate("musics", "uri title artist")
+    const album = await albumModel
+    .find()
+    .skip(1)
+    .limit(5)
+    .select("title artist")
+    .populate("artist","username email")
     res.status(200).json({ messages: "Album found", album: album});
-
     } catch (error) {
         return res.status(500).json({message: "Error occured", error: error.message});
     }
 }
 
-module.exports = { createMusic, createAlbum, getAllMusics, getAllalbums };
+async function getMusicbyId(req, res) {
+    const albumId = req.params.albumId;
+
+    const album = await albumModel.findById(albumId).populate("artist","username email");
+
+    return res.status(200).json({message:"Album found",album: album});
+}
+
+module.exports = { createMusic, createAlbum, getAllMusics, getAllalbums, getMusicbyId };
