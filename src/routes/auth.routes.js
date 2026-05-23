@@ -5,7 +5,7 @@ const validateMiddlewares = require("../middlewares/validationMIddlewares");
 
 router.post('/register',validateMiddlewares.registerUserValidationResult, authControllers.registerUser);
 
-router.post('/login', authControllers.loginUser);
+router.post('/login',validateMiddlewares.loginUserValidationResult, authControllers.loginUser);
 
 router.post('/logout', authControllers.logoutUser);
 

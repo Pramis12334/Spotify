@@ -25,6 +25,22 @@ const registerUserValidationResult = [
     .isLength({min: 3})
     .withMessage("Password must be at least 3 character"),
     validateResult
-]
+];
 
-module.exports = { registerUserValidationResult };
+const loginUserValidationResult = [ 
+    body("username")
+    .isString()
+    .withMessage("Username must be a String.")
+    .isLength({ min: 3, max: 30})
+    .withMessage("Username must be between 3 and 20 characters."),
+
+    body("email")
+    .isEmail()
+    .withMessage("Email must be valid"),
+
+    body("password")
+    .isLength({ min: 3 })
+    .withMessage("Password must be longer than 3 character")
+];
+
+module.exports = { registerUserValidationResult,loginUserValidationResult };
